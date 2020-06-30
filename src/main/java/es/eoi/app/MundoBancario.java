@@ -3,6 +3,9 @@ package es.eoi.app;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+
 import es.eoi.entity.Banco;
 import es.eoi.entity.Cliente;
 import es.eoi.entity.Cuenta;
@@ -12,9 +15,11 @@ import es.eoi.service.CuentaService;
 
 public class MundoBancario {
 
+	public static EntityManager em = Persistence.createEntityManagerFactory("EjercicioJPA").createEntityManager();
 	private static BancoService bancoService = new BancoService();
 	private static ClienteService clienteService = new ClienteService();
 	private static CuentaService cuentaService = new CuentaService();
+	
 
 	public static void main(String[] args) {
 
