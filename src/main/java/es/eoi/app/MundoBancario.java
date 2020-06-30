@@ -401,14 +401,24 @@ public class MundoBancario {
 
 	public static void listarCuentasBancos() {
 		listarBancos();
-		System.out.print("ID del banco: ");
-		int id = new Scanner(System.in).nextInt();
+		List<Banco> bancos = bancoService.getAll();
+		
+		if(bancos.size() == 0) {
+			System.out.println("	> No hay bancos.");
+		}else {
+			System.out.print("ID del banco: ");
+			int id = new Scanner(System.in).nextInt();
 
-		List<Cuenta> cuentas = cuentaService.findByBanco(id);
+			List<Cuenta> cuentas = cuentaService.findByBanco(id);
 
-		for (Cuenta cuenta : cuentas) {
-			System.out.println("ID: " + cuenta.getId() + " | Cliente: " + cuenta.getCliente().getNombre() + " | Banco: "
-					+ cuenta.getBanco().getNombre());
+			if(cuentas.size() == 0) {
+				System.out.println("	> No hay cuentas");
+			}else {
+				for (Cuenta cuenta : cuentas) {
+					System.out.println("ID: " + cuenta.getId() + " | Cliente: " + cuenta.getCliente().getNombre() + " | Banco: "
+							+ cuenta.getBanco().getNombre());
+				}
+			}
 		}
 	}
 
@@ -445,10 +455,14 @@ public class MundoBancario {
 			for (Cliente cliente : clientes) {
 				List<Cuenta> cuentas = cuentaService.findByCliente(cliente.getDni());
 				System.out.println("------ Cliente: " + cliente.getNombre() + " ------");
-				for (Cuenta cuenta : cuentas) {
-					System.out.println("	> ID: " + cuenta.getId() + " | Banco: " + cuenta.getBanco().getNombre());
+				if(cuentas.size() == 0) {
+					System.out.println("	> No hay cuentas.");
+				}else {
+					for (Cuenta cuenta : cuentas) {
+						System.out.println("	> ID: " + cuenta.getId() + " | Banco: " + cuenta.getBanco().getNombre());
+					}
 				}
-
+				
 			}
 		}
 
