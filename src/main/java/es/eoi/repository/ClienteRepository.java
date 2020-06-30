@@ -53,7 +53,6 @@ public class ClienteRepository {
 	public void delete(Cliente cliente) {
 		try {
 			em.getTransaction().begin();
-			cliente = em.merge(cliente);
 			em.remove(cliente);
 			em.getTransaction().commit();
 		} catch (Exception e) {

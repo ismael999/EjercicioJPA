@@ -24,7 +24,6 @@ public class BancoRepository {
 		List<Banco> bancos = new ArrayList<Banco>();
 		
 		try {
-			em.getTransaction().begin();
 			Query query = em.createQuery("FROM Banco");
 			bancos = query.getResultList();
 		} catch (Exception e) {
@@ -68,7 +67,6 @@ public class BancoRepository {
 		try {
 			Banco banco = findById(id);
 			em.getTransaction().begin();
-			banco = em.merge(banco);
 			em.remove(banco);
 			em.getTransaction().commit();
 		} catch (Exception e) {

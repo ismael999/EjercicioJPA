@@ -87,7 +87,6 @@ public class CuentaRepository {
 	public void delete(Cuenta cuenta) {
 		try {
 			em.getTransaction().begin();
-			cuenta = em.merge(cuenta);
 			em.remove(cuenta);
 			em.getTransaction().commit();
 		} catch (Exception e) {
