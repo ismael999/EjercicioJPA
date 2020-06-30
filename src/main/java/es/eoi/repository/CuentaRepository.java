@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import es.eoi.app.MundoBancario;
-import es.eoi.entity.Cliente;
 import es.eoi.entity.Cuenta;
 
 public class CuentaRepository {

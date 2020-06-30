@@ -2,8 +2,6 @@ package es.eoi.service;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import es.eoi.entity.Banco;
 import es.eoi.repository.BancoRepository;
 

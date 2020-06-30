@@ -2,17 +2,12 @@ package es.eoi.service;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import es.eoi.entity.Cliente;
-import es.eoi.entity.Cuenta;
 import es.eoi.repository.ClienteRepository;
-import es.eoi.repository.CuentaRepository;
 
 public class ClienteService {
 
 	private ClienteRepository repository = new ClienteRepository();
-	private CuentaService cuentaService = new CuentaService();
 
 	public List<Cliente> getAll() {
 		return repository.getAll();

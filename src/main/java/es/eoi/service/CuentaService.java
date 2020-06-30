@@ -2,9 +2,6 @@ package es.eoi.service;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
-import es.eoi.entity.Cliente;
 import es.eoi.entity.Cuenta;
 import es.eoi.repository.CuentaRepository;
 
