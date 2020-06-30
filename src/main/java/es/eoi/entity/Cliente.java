@@ -15,6 +15,7 @@ import javax.persistence.Table;
 public class Cliente {
 
 	@Id
+	@Column(name = "dni")
 	private String dni;
 
 	@Column(name = "nombre", length = 20)
