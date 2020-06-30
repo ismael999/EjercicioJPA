@@ -1,5 +1,6 @@
 package es.eoi.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -19,49 +20,89 @@ public class CuentaRepository {
 	}
 
 	public List<Cuenta> getAll() {
-		Query query = em.createQuery("FROM Cuenta");
-		List<Cuenta> cuentas = query.getResultList();
+		
+		List<Cuenta> cuentas = new ArrayList<Cuenta>();
+		
+		try {
+			Query query = em.createQuery("FROM Cuenta");
+			cuentas = query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return cuentas;
 	}
 
 	public Cuenta findById(int id) {
-		Cuenta cuenta = em.find(Cuenta.class, id);
+		Cuenta cuenta = null;
+		
+		try {
+			cuenta = em.find(Cuenta.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return cuenta;
 	}
 
 	public List<Cuenta> findByBanco(int idBanco) {
-		Query query = em.createQuery("FROM Cuenta c WHERE c.banco.id = :id");
-		query.setParameter("id", idBanco);
-		List<Cuenta> cuentas = null;
-		cuentas = query.getResultList();
+		
+		List<Cuenta> cuentas = new ArrayList<Cuenta>();
+		
+		try {
+			Query query = em.createQuery("FROM Cuenta c WHERE c.banco.id = :id");
+			query.setParameter("id", idBanco);
+			cuentas = null;
+			cuentas = query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return cuentas;
 	}
 
 	public List<Cuenta> findByCliente(String dni) {
-		Query query = em.createQuery("FROM Cuenta c WHERE c.cliente.dni = :dni");
-		query.setParameter("dni", dni);
-		List<Cuenta> cuentas = null;
-		cuentas = query.getResultList();
+		
+		List<Cuenta> cuentas = new ArrayList<Cuenta>();
+		
+		try {
+			Query query = em.createQuery("FROM Cuenta c WHERE c.cliente.dni = :dni");
+			query.setParameter("dni", dni);
+			cuentas = null;
+			cuentas = query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return cuentas;
 	}
 
 	public void create(Cuenta cuenta) {
-		em.getTransaction().begin();
-		em.persist(cuenta);
-		em.getTransaction().commit();
+		try {
+			em.getTransaction().begin();
+			em.persist(cuenta);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void delete(Cuenta cuenta) {
-		em.getTransaction().begin();
-		cuenta = em.merge(cuenta);
-		em.remove(cuenta);
-		em.getTransaction().commit();
+		try {
+			em.getTransaction().begin();
+			cuenta = em.merge(cuenta);
+			em.remove(cuenta);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void update(Cuenta cuenta) {
-		em.getTransaction().begin();
-		em.merge(cuenta);
-		em.getTransaction().commit();
+		try {
+			em.getTransaction().begin();
+			em.merge(cuenta);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

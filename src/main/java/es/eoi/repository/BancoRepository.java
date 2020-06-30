@@ -1,5 +1,6 @@
 package es.eoi.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -8,6 +9,7 @@ import javax.persistence.Query;
 
 import es.eoi.app.MundoBancario;
 import es.eoi.entity.Banco;
+import es.eoi.entity.Cliente;
 
 public class BancoRepository {
 
@@ -18,35 +20,60 @@ public class BancoRepository {
 	}
 	
 	public List<Banco> getAll() {
-		em.getTransaction().begin();
-		Query query = em.createQuery("FROM Banco");
-		List<Banco> bancos = query.getResultList();
+		
+		List<Banco> bancos = new ArrayList<Banco>();
+		
+		try {
+			em.getTransaction().begin();
+			Query query = em.createQuery("FROM Banco");
+			bancos = query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return bancos;
 	}
 
 	public Banco findById(int id) {
-		Banco banco = em.find(Banco.class, id);
+		Banco banco = null;
+		
+		try {
+			banco = em.find(Banco.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return banco;
 	}
 
 	public void create(Banco banco) {
-		em.getTransaction().begin();
-		em.persist(banco);
-		em.getTransaction().commit();
+		try {
+			em.getTransaction().begin();
+			em.persist(banco);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void update(Banco banco) {
-		em.getTransaction().begin();
-		em.merge(banco);
-		em.getTransaction().commit();
+		try {
+			em.getTransaction().begin();
+			em.merge(banco);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void delete(int id) {
-		Banco banco = findById(id);
-		em.getTransaction().begin();
-		banco = em.merge(banco);
-		em.remove(banco);
-		em.getTransaction().commit();
+		try {
+			Banco banco = findById(id);
+			em.getTransaction().begin();
+			banco = em.merge(banco);
+			em.remove(banco);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

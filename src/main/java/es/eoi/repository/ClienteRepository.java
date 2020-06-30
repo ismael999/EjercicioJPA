@@ -1,5 +1,6 @@
 package es.eoi.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -18,32 +19,55 @@ public class ClienteRepository {
 	}
 	
 	public List<Cliente> getAll(){
-		Query query = em.createQuery("FROM Cliente");
-		List<Cliente> clientes = query.getResultList();
+		List<Cliente> clientes = new ArrayList<Cliente>();
+		
+		try {
+			Query query = em.createQuery("FROM Cliente");
+			clientes = query.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return clientes;
 	}
 	
 	public Cliente findByDni(String dni) {
-		Cliente cliente = em.find(Cliente.class, dni);
+		Cliente cliente = null;
+		try {
+			cliente = em.find(Cliente.class, dni);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return cliente;
 	}
 	
 	public void create(Cliente cliente) {
-		em.getTransaction().begin();
-		em.persist(cliente);
-		em.getTransaction().commit();
+		try {
+			em.getTransaction().begin();
+			em.persist(cliente);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void delete(Cliente cliente) {
-		em.getTransaction().begin();
-		cliente = em.merge(cliente);
-		em.remove(cliente);
-		em.getTransaction().commit();
+		try {
+			em.getTransaction().begin();
+			cliente = em.merge(cliente);
+			em.remove(cliente);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void update (Cliente cliente) {
-		em.getTransaction().begin();
-		em.merge(cliente);
-		em.getTransaction().commit();
+		try {
+			em.getTransaction().begin();
+			em.merge(cliente);
+			em.getTransaction().commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
