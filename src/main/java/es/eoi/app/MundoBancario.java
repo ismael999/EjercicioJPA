@@ -17,7 +17,7 @@ public class MundoBancario {
 	private static CuentaService cuentaService = new CuentaService();
 
 	public static void main(String[] args) {
-			
+
 		menu();
 
 	}
@@ -137,7 +137,12 @@ public class MundoBancario {
 		Cliente cliente = new Cliente(dni, nombre, direccion);
 
 		clienteService.create(cliente);
-
+		cliente = clienteService.findByDni(cliente.getDni());
+		if (cliente != null) {
+			System.out.println("	> Cliente creado con éxito");
+		} else {
+			System.out.println("	> Error al crear el Cliente.");
+		}
 	}
 
 	public static void crearBanco() {
@@ -151,6 +156,14 @@ public class MundoBancario {
 
 		bancoService.create(banco);
 
+		banco = bancoService.findById(banco.getId());
+
+		if (banco != null) {
+			System.out.println("	> Banco creado con éxito.");
+		} else {
+			System.out.println("	> Error al crear el Banco.");
+		}
+
 	}
 
 	public static void buscarCliente() {
@@ -158,7 +171,13 @@ public class MundoBancario {
 		String dni = new Scanner(System.in).next();
 
 		Cliente cliente = clienteService.findByDni(dni);
-		System.out.println(cliente);
+
+		if (cliente != null) {
+			System.out.println(cliente);
+		} else {
+			System.out.println("	> Cliente no encontrado.");
+		}
+
 	}
 
 	public static void buscarBanco() {
@@ -166,9 +185,9 @@ public class MundoBancario {
 		int id = new Scanner(System.in).nextInt();
 		Banco banco = bancoService.findById(id);
 		if (banco != null) {
-			System.out.println("----->" + banco);
+			System.out.println("	>" + banco);
 		} else {
-			System.out.println("-----> No hay ningún banco con ese ID.");
+			System.out.println("	> No hay ningún banco con ese ID.");
 		}
 
 	}
@@ -225,11 +244,12 @@ public class MundoBancario {
 		Cliente cliente = clienteService.findByDni(dni);
 
 		if (cliente != null) {
-			System.out.println("Si borras el cliente se borrarán todas las cuentas asociadas a el. ¿Quieres continuar? (s / n).");
+			System.out.println(
+					"Si borras el cliente se borrarán todas las cuentas asociadas a el. ¿Quieres continuar? (s / n).");
 			String option = new Scanner(System.in).next();
-			if(option.equalsIgnoreCase("s")) {
+			if (option.equalsIgnoreCase("s")) {
 				clienteService.delete(cliente);
-			}else {
+			} else {
 				System.out.println("Operación cancelada.");
 			}
 		} else {
@@ -238,22 +258,31 @@ public class MundoBancario {
 	}
 
 	public static void eliminarBanco() {
-		List<Banco> bancos = bancoService.getAll();
-
 		listarBancos();
 
 		System.out.println("ID del banco a BORRAR: ");
 		int id = new Scanner(System.in).nextInt();
 
 		bancoService.delete(id);
+
+		Banco banco = bancoService.findById(id);
+		if (banco == null) {
+			System.out.println("	> El banco se ha eliminado con éxito.");
+		} else {
+			System.out.println("	> Error al eliminar el banco.");
+		}
 	}
 
 	public static void listarClientes() {
 		List<Cliente> clientes = clienteService.getAll();
 
 		System.out.println("**************** Clientes ****************");
-		for (Cliente cliente : clientes) {
-			System.out.println("DNI: " + cliente.getDni() + " | Nombre: " + cliente.getNombre());
+		if (clientes.size() == 0) {
+			System.out.println("	> No hay clientes.");
+		} else {
+			for (Cliente cliente : clientes) {
+				System.out.println("DNI: " + cliente.getDni() + " | Nombre: " + cliente.getNombre());
+			}
 		}
 	}
 
@@ -261,8 +290,12 @@ public class MundoBancario {
 		List<Banco> bancos = bancoService.getAll();
 
 		System.out.println("**************** Bancos ****************");
-		for (Banco banco : bancos) {
-			System.out.println("ID: " + banco.getId() + " | Nombre: " + banco.getNombre());
+		if (bancos.size() == 0) {
+			System.out.println("	> No hay bancos.");
+		} else {
+			for (Banco banco : bancos) {
+				System.out.println("ID: " + banco.getId() + " | Nombre: " + banco.getNombre());
+			}
 		}
 	}
 
@@ -272,100 +305,152 @@ public class MundoBancario {
 		int id = new Scanner(System.in).nextInt();
 		Banco banco = bancoService.findById(id);
 
-		listarClientes();
-		System.out.print("\nEscribe el DNI del cliente propietario de la cuenta: ");
-		String dni = new Scanner(System.in).next();
-		Cliente cliente = clienteService.findByDni(dni);
+		if (banco != null) {
+			listarClientes();
+			System.out.print("\nEscribe el DNI del cliente propietario de la cuenta: ");
+			String dni = new Scanner(System.in).next();
+			Cliente cliente = clienteService.findByDni(dni);
 
-		Cuenta cuenta = new Cuenta(banco, cliente);
-		cuentaService.create(cuenta);
+			if (cliente != null) {
+				Cuenta cuenta = new Cuenta(banco, cliente);
+				cuentaService.create(cuenta);
+				cuenta = cuentaService.findById(cuenta.getId());
+
+				if (cuenta != null) {
+					System.out.println("	> La cuenta ha sido creada con éxito.");
+				} else {
+					System.out.println("	> Error al crear la cuenta.");
+				}
+
+			} else {
+				System.out.println("	> El cliente seleccionado no existe.");
+			}
+		} else {
+			System.out.println("	> El banco seleccionado no existe.");
+		}
+
 	}
 
 	public static void modificarCuenta() {
 		List<Cuenta> cuentas = cuentaService.getAll();
 
-		for (Cuenta cuenta : cuentas) {
-			System.out.println("ID: " + cuenta.getId() + " | Cliente: " + cuenta.getCliente().getNombre() + " | Banco: "
-					+ cuenta.getBanco().getNombre());
-		}
-
-		System.out.print("Selecciona el ID de la cuenta a modificar: ");
-		int idCuenta = new Scanner(System.in).nextInt();
-		
-		Cuenta cuenta = cuentaService.findById(idCuenta);
-		
-		if(cuenta != null) {
-			listarBancos();
-			
-			System.out.print("\nEscribe el ID del nuevo banco: ");
-			int idBanco = new Scanner(System.in).nextInt();
-			Banco banco = bancoService.findById(idBanco);
-			
-			if(banco != null) {
-				cuenta.setBanco(banco);
-				cuentaService.update(cuenta);
-				System.out.println("	> Cuenta actualizada.");
-			}else {
-				System.out.println("ID del banco incorrecto.");
+		if (cuentas.size() == 0) {
+			System.out.println("	> No hay cuentas.");
+		} else {
+			for (Cuenta cuenta : cuentas) {
+				System.out.println("ID: " + cuenta.getId() + " | Cliente: " + cuenta.getCliente().getNombre()
+						+ " | Banco: " + cuenta.getBanco().getNombre());
 			}
-		}else {
-			System.out.println("El ID de la cuenta es incorrecto.");
+
+			System.out.print("Selecciona el ID de la cuenta a modificar: ");
+			int idCuenta = new Scanner(System.in).nextInt();
+
+			Cuenta cuenta = cuentaService.findById(idCuenta);
+
+			if (cuenta != null) {
+				listarBancos();
+
+				System.out.print("\nEscribe el ID del nuevo banco: ");
+				int idBanco = new Scanner(System.in).nextInt();
+				Banco banco = bancoService.findById(idBanco);
+
+				if (banco != null) {
+					cuenta.setBanco(banco);
+					cuentaService.update(cuenta);
+					System.out.println("	> Cuenta actualizada.");
+				} else {
+					System.out.println("	> ID del banco incorrecto.");
+				}
+			} else {
+				System.out.println("	> El ID de la cuenta es incorrecto.");
+			}
 		}
 	}
-	
+
 	public static void eliminarCuenta() {
 		List<Cuenta> cuentas = cuentaService.getAll();
 
-		for (Cuenta cuenta : cuentas) {
-			System.out.println("ID: " + cuenta.getId() + " | Cliente: " + cuenta.getCliente().getNombre() + " | Banco: "
-					+ cuenta.getBanco().getNombre());
+		if (cuentas.size() == 0) {
+			System.out.println("	> No hay cuentas.");
+		} else {
+			for (Cuenta cuenta : cuentas) {
+				System.out.println("ID: " + cuenta.getId() + " | Cliente: " + cuenta.getCliente().getNombre()
+						+ " | Banco: " + cuenta.getBanco().getNombre());
+			}
+
+			System.out.print("Escribe el ID de la Cuenta a BORRAR: ");
+			int id = new Scanner(System.in).nextInt();
+			Cuenta cuenta = cuentaService.findById(id);
+
+			if (cuenta != null) {
+				cuentaService.delete(cuenta);
+
+				cuenta = cuentaService.findById(cuenta.getId());
+
+				if (cuenta == null) {
+					System.out.println("	> Cuenta borrada con exito");
+				} else {
+					System.out.println("	> Error al borrar la cuenta.");
+				}
+
+			} else {
+				System.out.println("	> La cuenta no existe.");
+			}
 		}
-		
-		System.out.print("Escribe el ID de la Cuenta a BORRAR: ");
-		int id = new Scanner(System.in).nextInt();
-		Cuenta cuenta = cuentaService.findById(id);
-		
-		cuentaService.delete(cuenta);
-		System.out.println("	> Cuenta Borrada.");
 	}
-	
+
 	public static void listarCuentasBancos() {
 		listarBancos();
 		System.out.print("ID del banco: ");
 		int id = new Scanner(System.in).nextInt();
-		
+
 		List<Cuenta> cuentas = cuentaService.findByBanco(id);
-		
+
 		for (Cuenta cuenta : cuentas) {
 			System.out.println("ID: " + cuenta.getId() + " | Cliente: " + cuenta.getCliente().getNombre() + " | Banco: "
 					+ cuenta.getBanco().getNombre());
 		}
 	}
-	
+
 	public static void listarCuentasClientes() {
 		listarClientes();
-		System.out.print("DNI del cliente: ");
-		String dni = new Scanner(System.in).next();
-		
-		List<Cuenta> cuentas = cuentaService.findByCliente(dni);
-		
-		for (Cuenta cuenta : cuentas) {
-			System.out.println("ID: " + cuenta.getId() + " | Cliente: " + cuenta.getCliente().getNombre() + " | Banco: "
-					+ cuenta.getBanco().getNombre());
+
+		List<Cliente> clientes = clienteService.getAll();
+
+		if (clientes.size() == 0) {
+			System.out.println("	> No hay clientes.");
+		} else {
+			System.out.print("DNI del cliente: ");
+			String dni = new Scanner(System.in).next();
+
+			List<Cuenta> cuentas = cuentaService.findByCliente(dni);
+
+			if (cuentas.size() == 0) {
+				System.out.println("	> No hay cuentas");
+			} else {
+				for (Cuenta cuenta : cuentas) {
+					System.out.println("ID: " + cuenta.getId() + " | Cliente: " + cuenta.getCliente().getNombre()
+							+ " | Banco: " + cuenta.getBanco().getNombre());
+				}
+			}
 		}
 	}
-	
+
 	public static void listarClientesCuentas() {
 		List<Cliente> clientes = clienteService.getAll();
-		
-		for (Cliente cliente : clientes) {
-			List<Cuenta> cuentas = cuentaService.findByCliente(cliente.getDni());
-			System.out.println("------ Cliente: " + cliente.getNombre() + " ------");
-			for (Cuenta cuenta : cuentas) {
-				System.out.println("	> ID: " + cuenta.getId() + " | Banco: "
-						+ cuenta.getBanco().getNombre());
+
+		if (clientes.size() == 0) {
+			System.out.println("	> No hay clientes.");
+		} else {
+			for (Cliente cliente : clientes) {
+				List<Cuenta> cuentas = cuentaService.findByCliente(cliente.getDni());
+				System.out.println("------ Cliente: " + cliente.getNombre() + " ------");
+				for (Cuenta cuenta : cuentas) {
+					System.out.println("	> ID: " + cuenta.getId() + " | Banco: " + cuenta.getBanco().getNombre());
+				}
+
 			}
-			
 		}
+
 	}
 }
